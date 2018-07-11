@@ -6,50 +6,50 @@ import Electives from './api/electives.json';
 
 const Courses = {
   core: Core,
-  electives: Electives,
+  electives: Electives
 };
 
 module.exports = class extends React.Component {
   static propTypes = {
     department: PropTypes.string,
     course: PropTypes.string,
-    onChange: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired
   };
 
   state = {
     department: null,
     course: null,
     courses: [],
-    _loading: false,
+    _loading: false
   };
 
-  componentWillReceiveProps(update) {
-    this.setState({
+  getDerivedStateFromProps(update) {
+    return {
       department: update.department,
-      course: update.course,
-    });
+      course: update.course
+    };
   }
 
-  onSelectDepartment = (evt) => {
+  onSelectDepartment = evt => {
     const department = evt.target.value;
     const course = null;
-    this.setState({ department, course });
-    this.props.onChange({ name: 'department', value: department });
-    this.props.onChange({ name: 'course', value: course });
+    this.setState({department, course});
+    this.props.onChange({name: 'department', value: department});
+    this.props.onChange({name: 'course', value: course});
 
     if (department) this.fetch(department);
   };
 
-  onSelectCourse = (evt) => {
+  onSelectCourse = evt => {
     const course = evt.target.value;
-    this.setState({ course });
-    this.props.onChange({ name: 'course', value: course });
+    this.setState({course});
+    this.props.onChange({name: 'course', value: course});
   };
 
-  fetch = (department) => {
-    this.setState({ _loading: true, courses: [] });
-    apiClient(department).then((courses) => {
-      this.setState({ _loading: false, courses: courses });
+  fetch = department => {
+    this.setState({_loading: true, courses: []});
+    apiClient(department).then(courses => {
+      this.setState({_loading: false, courses: courses});
     });
   };
 
@@ -59,34 +59,23 @@ module.exports = class extends React.Component {
         onChange={this.onSelectDepartment}
         value={this.state.department || ''}
       >
-
-        <option value=''>
-          Which department?
-        </option>
-        <option value='core'>
-          NodeSchool: Core
-        </option>
-        <option value='electives'>
-          NodeSchool: Electives
-        </option>
+        <option value="">Which department?</option>
+        <option value="core">NodeSchool: Core</option>
+        <option value="electives">NodeSchool: Electives</option>
       </select>
     );
   };
 
   renderCourseSelect = () => {
     if (this.state._loading) {
-      return <img alt='loading' src='/img/loading.gif' />;
+      return <img alt="loading" src="/img/loading.gif" />;
     }
     if (!this.state.department || !this.state.courses.length) return <span />;
 
     return (
-      <select
-        onChange={this.onSelectCourse}
-        value={this.state.course || ''}
-      >
-
-        { [
-          <option value='' key='course-none'>
+      <select onChange={this.onSelectCourse} value={this.state.course || ''}>
+        {[
+          <option value="" key="course-none">
             Which course?
           </option>,
 
@@ -94,8 +83,8 @@ module.exports = class extends React.Component {
             <option value={course} key={i}>
               {course}
             </option>
-          )),
-        ] }
+          ))
+        ]}
       </select>
     );
   };
@@ -103,9 +92,9 @@ module.exports = class extends React.Component {
   render() {
     return (
       <div>
-        { this.renderDepartmentSelect() }
+        {this.renderDepartmentSelect()}
         <br />
-        { this.renderCourseSelect() }
+        {this.renderCourseSelect()}
       </div>
     );
   }
@@ -113,8 +102,10 @@ module.exports = class extends React.Component {
 
 function apiClient(department) {
   return {
-    then: function (cb) {
-      setTimeout(() => { cb(Courses[department]); }, 1000);
-    },
+    then: function(cb) {
+      setTimeout(() => {
+        cb(Courses[department]);
+      }, 1000);
+    }
   };
 }

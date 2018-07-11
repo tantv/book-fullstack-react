@@ -6,14 +6,14 @@ const Field = require('./08-field-component-field.js');
 const CourseSelect = require('./09-course-select.js');
 
 module.exports = class extends React.Component {
-  static displayName = "11-redux-form";
+  static displayName = '11-redux-form';
 
   static propTypes = {
     people: PropTypes.array.isRequired,
     isLoading: PropTypes.bool.isRequired,
     saveStatus: PropTypes.string.isRequired,
     fields: PropTypes.object,
-    onSubmit: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired
   };
 
   state = {
@@ -23,39 +23,39 @@ module.exports = class extends React.Component {
       course: null,
       department: null
     },
-    fieldErrors: {},
+    fieldErrors: {}
   };
 
-  componentWillReceiveProps(update) {
+  getDerivedStateFromProps(update) {
     console.log('this.props.fields', this.props.fields, update);
 
-    this.setState({ fields: update.fields });
+    return {fields: update.fields};
   }
 
-  onFormSubmit = (evt) => {
+  onFormSubmit = evt => {
     const person = this.state.fields;
 
     evt.preventDefault();
 
     if (this.validate()) return;
 
-    this.props.onSubmit([ ...this.props.people, person ]);
+    this.props.onSubmit([...this.props.people, person]);
   };
 
-  onInputChange = ({ name, value, error }) => {
+  onInputChange = ({name, value, error}) => {
     const fields = this.state.fields;
     const fieldErrors = this.state.fieldErrors;
 
     fields[name] = value;
     fieldErrors[name] = error;
 
-    this.setState({ fields, fieldErrors });
+    this.setState({fields, fieldErrors});
   };
 
   validate = () => {
     const person = this.state.fields;
     const fieldErrors = this.state.fieldErrors;
-    const errMessages = Object.keys(fieldErrors).filter((k) => fieldErrors[k]);
+    const errMessages = Object.keys(fieldErrors).filter(k => fieldErrors[k]);
 
     if (!person.name) return true;
     if (!person.email) return true;
@@ -68,7 +68,7 @@ module.exports = class extends React.Component {
 
   render() {
     if (this.props.isLoading) {
-      return <img alt='loading' src='/img/loading.gif' />;
+      return <img alt="loading" src="/img/loading.gif" />;
     }
 
     const dirty = Object.keys(this.state.fields).length;
@@ -80,23 +80,22 @@ module.exports = class extends React.Component {
         <h1>Sign Up Sheet</h1>
 
         <form onSubmit={this.onFormSubmit}>
-
           <Field
-            placeholder='Name'
-            name='name'
+            placeholder="Name"
+            name="name"
             value={this.state.fields.name}
             onChange={this.onInputChange}
-            validate={(val) => (val ? false : 'Name Required')}
+            validate={val => (val ? false : 'Name Required')}
           />
 
           <br />
 
           <Field
-            placeholder='Email'
-            name='email'
+            placeholder="Email"
+            name="email"
             value={this.state.fields.email}
             onChange={this.onInputChange}
-            validate={(val) => (isEmail(val) ? false : 'Invalid Email')}
+            validate={val => (isEmail(val) ? false : 'Invalid Email')}
           />
 
           <br />
@@ -109,29 +108,34 @@ module.exports = class extends React.Component {
 
           <br />
 
-          {{
-            SAVING: <input value='Saving...' type='submit' disabled />,
-            SUCCESS: <input value='Saved!' type='submit' disabled />,
-            ERROR: <input
-              value='Save Failed - Retry?'
-              type='submit'
-              disabled={this.validate()}
-            />,
-            READY: <input
-              value='Submit'
-              type='submit'
-              disabled={this.validate()}
-            />,
-          }[status]}
-
+          {
+            {
+              SAVING: <input value="Saving..." type="submit" disabled />,
+              SUCCESS: <input value="Saved!" type="submit" disabled />,
+              ERROR: (
+                <input
+                  value="Save Failed - Retry?"
+                  type="submit"
+                  disabled={this.validate()}
+                />
+              ),
+              READY: (
+                <input
+                  value="Submit"
+                  type="submit"
+                  disabled={this.validate()}
+                />
+              )
+            }[status]
+          }
         </form>
 
         <div>
           <h3>People</h3>
           <ul>
-            {this.props.people.map(({ name, email, department, course }, i) =>
-              <li key={i}>{[ name, email, department, course ].join(' - ')}</li>
-            ) }
+            {this.props.people.map(({name, email, department, course}, i) => (
+              <li key={i}>{[name, email, department, course].join(' - ')}</li>
+            ))}
           </ul>
         </div>
       </div>

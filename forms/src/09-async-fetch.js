@@ -8,20 +8,20 @@ const content = document.createElement('div');
 document.body.appendChild(content);
 
 module.exports = class extends React.Component {
-  static displayName = "09-async-fetch";
+  static displayName = '09-async-fetch';
 
   state = {
     fields: {
       name: '',
       email: '',
       course: null,
-      department: null,
+      department: null
     },
     fieldErrors: {},
-    people: [],
+    people: []
   };
 
-  onFormSubmit = (evt) => {
+  onFormSubmit = evt => {
     const people = this.state.people;
     const person = this.state.fields;
 
@@ -35,25 +35,25 @@ module.exports = class extends React.Component {
         name: '',
         email: '',
         course: null,
-        department: null,
-      },
+        department: null
+      }
     });
   };
 
-  onInputChange = ({ name, value, error }) => {
-    const fields = this.state.fields;
-    const fieldErrors = this.state.fieldErrors;
+  onInputChange = ({name, value, error}) => {
+    const fields = Object.assign({}, this.state.fields);
+    const fieldErrors = Object.assign({}, this.state.fieldErrors);
 
     fields[name] = value;
     fieldErrors[name] = error;
 
-    this.setState({ fields, fieldErrors });
+    this.setState({fields, fieldErrors});
   };
 
   validate = () => {
     const person = this.state.fields;
     const fieldErrors = this.state.fieldErrors;
-    const errMessages = Object.keys(fieldErrors).filter((k) => fieldErrors[k]);
+    const errMessages = Object.keys(fieldErrors).filter(k => fieldErrors[k]);
 
     if (!person.name) return true;
     if (!person.email) return true;
@@ -70,23 +70,22 @@ module.exports = class extends React.Component {
         <h1>Sign Up Sheet</h1>
 
         <form onSubmit={this.onFormSubmit}>
-
           <Field
-            placeholder='Name'
-            name='name'
+            placeholder="Name"
+            name="name"
             value={this.state.fields.name}
             onChange={this.onInputChange}
-            validate={(val) => (val ? false : 'Name Required')}
+            validate={val => (val ? false : 'Name Required')}
           />
 
           <br />
 
           <Field
-            placeholder='Email'
-            name='email'
+            placeholder="Email"
+            name="email"
             value={this.state.fields.email}
             onChange={this.onInputChange}
-            validate={(val) => (isEmail(val) ? false : 'Invalid Email')}
+            validate={val => (isEmail(val) ? false : 'Invalid Email')}
           />
 
           <br />
@@ -99,15 +98,15 @@ module.exports = class extends React.Component {
 
           <br />
 
-          <input type='submit' disabled={this.validate()} />
+          <input type="submit" disabled={this.validate()} />
         </form>
 
         <div>
           <h3>People</h3>
           <ul>
-            { this.state.people.map(({ name, email, department, course }, i) =>
-              <li key={i}>{[ name, email, department, course ].join(' - ')}</li>
-            ) }
+            {this.state.people.map(({name, email, department, course}, i) => (
+              <li key={i}>{[name, email, department, course].join(' - ')}</li>
+            ))}
           </ul>
         </div>
       </div>
